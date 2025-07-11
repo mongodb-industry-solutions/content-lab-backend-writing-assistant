@@ -1,21 +1,13 @@
 import json
-
 from bedrock.client import BedrockClient
 from botocore.exceptions import ClientError
-
 from typing import Optional
-
 import logging
-
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 class BedrockAnthropicChatCompletions(BedrockClient):
     """ A class to generate chat completions using Bedrock's Anthropic text models"""
@@ -75,7 +67,7 @@ class BedrockAnthropicChatCompletions(BedrockClient):
 
         except (ClientError, Exception) as e:
             self.log.error(
-                f"ERROR: Can't invoke '{self.text_model}'. Reason: {e}")
+                f"ERROR: Can't invoke '{self.model_id}'. Reason: {e}")
             exit(1)
 
         # Decode the response body.

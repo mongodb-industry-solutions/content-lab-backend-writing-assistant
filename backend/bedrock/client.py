@@ -1,14 +1,10 @@
 import boto3
 from botocore.config import Config
 import os
-
 from typing import Optional
-
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
 
 class BedrockClient:
     """Implementation of BedrockClient class."""
