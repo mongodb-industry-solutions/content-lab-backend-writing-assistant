@@ -55,7 +55,7 @@ class WritingAssistant:
             else:
                 # No tool specified - use chat completion
                 logger.info("No tool specified, using chat completion")
-                result = self.writing_tools.chat_completion(user_input, user_profile)
+                result = self.writing_tools.chat_completion(user_input, user_profile, content)
                 selected_tool = "chat"
             
             return {"result": result, "tool_used": selected_tool}

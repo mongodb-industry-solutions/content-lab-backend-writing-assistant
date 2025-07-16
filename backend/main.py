@@ -1,7 +1,3 @@
-# main.py 
-
-# This file sets up the FastAPI application and includes the main routes.
-
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,10 +8,8 @@ import logging
 from writing_assistant.assistant import WritingAssistant
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
-# Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -29,19 +23,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize writing assistant
 writing_assistant = WritingAssistant()
-
-# Pydantic models for request validation. 
 
 class WritingRequest(BaseModel):
     profile: Dict[str, Any]
-    draftContent: str # This is for the draft (A page where the user is writing)
+    draftContent: str 
     promptType: Optional[str]  = None
     message: str
     topicDetails: Dict[str, Any]
-
-# Test Check 
 
 @app.get("/")
 async def read_root():

@@ -221,7 +221,7 @@ class WritingTools:
             logger.error(f"Error in proofread tool: {e}")
             return {"corrections": []}
 
-    def chat_completion(self, query: str, user_profile: dict) -> dict:
+    def chat_completion(self, query: str, user_profile: dict, content: str) -> dict:
         """Provide a chat response according to user's preferred writing style."""
         try:
             persona, tone, style_traits, sample_text = self._extract_profile_data(user_profile)
@@ -233,6 +233,9 @@ class WritingTools:
             USER'S PREFERRED WRITING STYLE:
             {style_guidance}
             
+            DRAFT CONTENT AS OF NOW FOR CONTEXT:
+            {content}
+            
             USER QUERY:
             {query}
             
@@ -240,13 +243,15 @@ class WritingTools:
             
             RESPONSE GUIDELINES:
             1. Keep responses concise and conversational - match the length and energy of the user's message
-            2. For simple greetings like "hi" or "hello", respond briefly and warmly in their style
-            3. For questions, provide helpful answers but avoid unnecessary elaboration
-            4. Write in the user's persona, tone, and style traits naturally
+            2. The content is purely for context, if they ask something about the content, you can use it to help them.
+            3. For simple greetings like "hi" or "hello", respond briefly and warmly in their style
+            4. For questions, provide helpful answers but avoid unnecessary elaboration
+            5. Write in the user's persona, tone, and style traits naturally
             5. Sound like the same person who wrote their sample text
             6. Don't be overly formal or verbose unless their style specifically calls for it
             7. Match their conversational energy - short query = short response, detailed query = detailed response
             8. Never mention that you're adapting to a style - just be natural
+            9. I REPEAT, DO NOT RETURN LONG RESPONSES, KEEP THEM CONCISE AND TO THE POINT
             
             Remember: This is a chat conversation, not an essay. Be helpful but conversational.
             """
