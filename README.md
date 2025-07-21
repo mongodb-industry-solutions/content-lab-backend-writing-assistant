@@ -74,11 +74,6 @@ The content or suggestions are then returned to the user through the API.
 
 The Writing Assistant backend combines user input, advanced AI models, and specialized tools to deliver high-quality writing assistance in real time.
 
-## **Where Does MongoDB Shine?**
-
-
-
-
 ## **Tech Stack**
 
 ### Web Framework & API
@@ -254,4 +249,3 @@ E.g. `http://localhost:8001/docs`
 ---
 
 You’re now ready to use the Writing Assistant Backend!
-
