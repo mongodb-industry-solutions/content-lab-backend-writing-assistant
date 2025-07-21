@@ -48,6 +48,8 @@ The service is fully containerized using Docker, enabling consistent deployment 
 
 ## **Writing Assistant Workflow**
 
+### Overview
+
 1. **User Input:**  
 
 Users submit a writing prompt, draft, or editing request via the frontend interface.
@@ -71,6 +73,10 @@ The content or suggestions are then returned to the user through the API.
 **In summary:**  
 
 The Writing Assistant backend combines user input, advanced AI models, and specialized tools to deliver high-quality writing assistance in real time.
+
+## **Where Does MongoDB Shine?**
+
+
 
 
 ## **Tech Stack**
@@ -97,10 +103,14 @@ The Writing Assistant backend combines user input, advanced AI models, and speci
 - [**python-dotenv**](https://python-dotenv.readthedocs.io/) for environment variable management.
 
 
+## **Relevant Models**
+
+- [**Claude 3 Haiku**](https://docs.aws.amazon.com/bedrock/latest/userguidebedrock-runtime_example_bedrock-runtime_InvokeModel_AnthropicClaude_section.html) for writing assisant. 
+
+
 ## **Key Components**
 
-#### a. Bedrock Integration `(backend/bedrock/)`
-
+#### a. Bedrock Integration (`backend/bedrock/`)
 
 - **anthropic_chat_completions.py:**  
   Handles chat completion requests to Anthropic Claude via AWS Bedrock.
@@ -121,12 +131,11 @@ The Writing Assistant backend combines user input, advanced AI models, and speci
 - Serves as the main API gateway, routing requests to the appropriate modules and tools.
 
 
-
-
 ## **Prerequisites**
 
 Before you begin, ensure you have met the following requirements:
 
+- **MongoDB Atlas** account - [Register Here](https://account.mongodb.com/account/register)
 - **Python 3.10 or higher**
 - **Poetry** – [Install Here](https://python-poetry.org/docs/#installation)
 - **AWS CLI** configured with appropriate credentials – [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
@@ -137,17 +146,32 @@ Before you begin, ensure you have met the following requirements:
 
 ## **Setup Instructions**
 
-### 1. Clone the Repository
+### 1. **Clone the Repository**
 
 ```bash
-git clone <repo-url>
+git clone <REPO_URL>
 cd ist-media-internship-be2
 ```
+> Replace `<REPO_URL>` with your repository's actual URL.
 
-### 2. Configure Environment Variables
+### 2. **Install Poetry**
 
-Create a `.env` file in the `/backend` directory with the following content:
+If you don’t have Poetry installed, follow the [official installation guide](https://python-poetry.org/docs/#installation):
 
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+---
+
+### Step 2: Add MongoDB User
+
+Follow [MongoDB's guide](https://www.mongodb.com/docs/atlas/security-add-mongodb-users/) to create a user with **readWrite** access to the `contentlab` database.
+
+### 3. **Set Up Environment Variables**
+
+> [!IMPORTANT]
+> Create a `.env` file in the `/backend` directory with the following content:
 >
 > ```bash
 > MONGODB_URI=your_mongod_uri
@@ -158,29 +182,43 @@ Create a `.env` file in the `/backend` directory with the following content:
 >SUGGESTION_COLLECTION=suggestions
 >USER_PROFILES_COLLECTION=userProfiles
 >DRAFTS_COLLECTION=drafts
->AWS_REGION=us-east-1
+>AWS_REGION=regionname
 > ```
 
-### 3. Install Dependencies
+### 4. **Install Python Dependencies**
+
+Navigate to the backend directory and install dependencies using Poetry:
 
 ```bash
 cd backend
 poetry install
 ```
 
-### 4. Start the Backend
+---
+
+### 5. **Run the Backend Service**
+
+Start the backend API server:
 
 ```bash
 poetry run python main.py
 ```
+> If using FastAPI and Uvicorn, you might use:
+> ```bash
+> poetry run uvicorn main:app --host 0.0.0.0 --port 8000
+> ```
 
-Or, if using Docker:
+---
+
+### 6. **(Optional) Run with Docker**
+
+To build and run the backend in a Docker container:
 
 ```bash
 make build
 ```
 
-To remove the container and image:
+To stop and remove the container and image:
 
 ```bash
 make clean
@@ -188,10 +226,9 @@ make clean
 
 ---
 
-## **API Documentation**
+### 7. **Access the API Documentation**
 
-
-You can access the API documentation by visiting the following URL:
+Once the server is running, open your browser and go to:
 
 ```
 http://localhost:<PORT_NUMBER>/docs
@@ -205,4 +242,16 @@ E.g. `http://localhost:8001/docs`
 
 > [!IMPORTANT]
 > Check that you've created an `.env` file that contains the required environment variables.
+
+
+---
+
+**Troubleshooting Tips:**
+- Ensure your `.env` file is present and correctly configured.
+- Verify your AWS credentials and Bedrock access.
+- If you encounter issues with dependencies, try `poetry lock --no-update` and then `poetry install` again.
+
+---
+
+You’re now ready to use the Writing Assistant Backend!
 
