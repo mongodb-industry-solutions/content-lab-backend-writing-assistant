@@ -61,6 +61,8 @@ This backend is structured as a modular microservice, focused on scalable, maint
 - **(Optional) Other APIs:**
   - The codebase is structured for easy extension to other AI or data services.
 
+### **Summary Table**
+
 | Layer/Component   | Code Location(s)                                  | Responsibility                                             |
 |-------------------|---------------------------------------------------|------------------------------------------------------------|
 | API Layer         | `backend/main.py`                                 | Expose REST endpoints, route requests                      |
