@@ -38,7 +38,7 @@ class WritingTools:
         {sample_text}
         """
 
-    def refine_content(self, content: str, user_profile: dict) -> dict:
+    def refine_content(self, content: str, user_profile: dict, user_input: str) -> dict:
         """Refine content according to user's preferred writing style."""
         try: 
             persona, tone, style_traits, sample_text = self._extract_profile_data(user_profile)
@@ -47,19 +47,24 @@ class WritingTools:
             prompt = f"""
             You are a writing assistant that refines content according to specific style profiles.
             
+            PRIMARY USER REQUEST (HIGHEST PRIORITY):
+            {user_input}
+            
             USER PROFILE:
             {style_guidance}
             
             CONTENT TO REFINE:
             {content}
             
-            Rewrite this content to perfectly match the user's writing style, tone, and persona.
-            Be extremely careful to follow ALL style traits listed.
+            CRITICAL: The user's request above is the MOST IMPORTANT requirement. Follow it exactly.
             
-            IMPORTANT REQUIREMENTS:
-            1. Preserve the original meaning and key information
-            2. Rewrite in the user's specific writing style and tone
-            3. Apply all the style traits consistently throughout
+            Rewrite this content to fulfill the user's specific request while matching their writing style.
+            PRIORITIZE the user's request over everything else, including style consistency if there's a conflict.
+            
+            REQUIREMENTS (in priority order):
+            1. FIRST AND FOREMOST: Follow the user's specific request exactly
+            2. Preserve the original meaning and key information (unless user requests otherwise)
+            3. Apply the user's writing style and tone where possible
             4. Return ONLY the refined HTML content - no JSON formatting needed
             5. If the original content has HTML formatting, preserve and enhance it
             6. If the original content is plain text, return well-formatted HTML
@@ -81,7 +86,7 @@ class WritingTools:
                 "html_content": f"<p>Error occurred: {str(e)}</p>"
             }
 
-    def create_outline(self, topic_details: str, user_profile: dict) -> dict:
+    def create_outline(self, topic_details: str, user_profile: dict, user_input: str) -> dict:
         """Create an outline according to user's preferred writing style using topic details."""
         try: 
             style_guidance = self._create_style_guidance(user_profile)
@@ -114,21 +119,28 @@ class WritingTools:
             prompt = f"""
             You are a writing coach creating a CONCISE STRUCTURAL OUTLINE, not a full article.
 
+            PRIMARY USER REQUEST (HIGHEST PRIORITY):
+            {user_input}
+
             USER PROFILE:
             {style_guidance}
 
             TOPIC INFORMATION:
             {topic_details}
 
-            Create a brief structural outline that guides the user on HOW to write about this topic.
+            CRITICAL: The user's request above is the MOST IMPORTANT requirement. Everything else is secondary.
             
-            OUTLINE REQUIREMENTS:
-            1. Provide STRUCTURE and GUIDANCE, not full content
-            2. Use brief instructional phrases like "Focus on...", "Include...", "Emphasize..."
-            3. Give writing direction rather than complete sentences
-            4. Keep sections concise - this is a roadmap, not the destination
-            5. Adapt the structure to fit the specific topic provided
-            6. Include writing tips specific to the user's style
+            Create a brief structural outline that guides the user on HOW to write about this topic.
+            PRIORITIZE fulfilling the user's specific request above all other considerations.
+            
+            OUTLINE REQUIREMENTS (in priority order):
+            1. FIRST AND FOREMOST: Follow the user's specific request exactly
+            2. Provide STRUCTURE and GUIDANCE, not full content
+            3. Use brief instructional phrases like "Focus on...", "Include...", "Emphasize..."
+            4. Give writing direction rather than complete sentences
+            5. Keep sections concise - this is a roadmap, not the destination
+            6. Adapt the structure to fit the specific topic provided
+            7. Include writing tips specific to the user's style
             
             FORMAT REQUIREMENTS:
             Return your outline as HTML following this structure:
@@ -159,14 +171,17 @@ class WritingTools:
                 "html_content": f"<p>Error occurred: {str(e)}</p>"
             }
         
-    def proofread_content(self, content: str, user_profile: dict) -> dict:
+    def proofread_content(self, content: str, user_profile: dict, user_input: str) -> dict:
         """Proofread content while preserving user's preferred writing style."""
         try:
             persona, tone, style_traits, sample_text = self._extract_profile_data(user_profile)
             style_guidance = self._create_style_guidance(user_profile)
             
             prompt = f"""
-            You are a meticulous proofreader that only identifies genuine errors in text.
+            You are a meticulous proofreader that identifies errors in text.
+            
+            PRIMARY USER INSTRUCTIONS (HIGHEST PRIORITY):
+            {user_input}
             
             USER PROFILE:
             {style_guidance}
@@ -174,36 +189,48 @@ class WritingTools:
             CONTENT TO PROOFREAD:
             {content}
             
-            CRITICAL INSTRUCTIONS:
-            1. ONLY flag actual errors: spelling mistakes, grammar errors, punctuation errors, typos
-            2. DO NOT suggest stylistic changes - preserve the user's writing style completely
-            3. DO NOT suggest corrections where the original and corrected text would be identical
-            4. BE CONSERVATIVE - when in doubt, don't suggest a correction
-            5. IGNORE style preferences - only fix objective errors
-            6. DO NOT change contractions, colloquialisms, or informal language if they match the user's style
+            CRITICAL: The user's instructions above are the MOST IMPORTANT. Follow them exactly.
             
-            ONLY return corrections for clear, objective errors like:
-            ✓ "teh" → "the" (typo)
-            ✓ "recieve" → "receive" (spelling)
-            ✓ "Your correct" → "You're correct" (grammar)
-            ✓ Missing punctuation at sentence end
+            IMPORTANT: When user mentions specific letters (like "T and G"), apply case-insensitively (both "T/t" and "G/g").
             
-            DO NOT return corrections for:
-            ✗ Style preferences
-            ✗ Word choice variations
-            ✗ Sentence structure changes
-            ✗ Tone adjustments
-            ✗ Identical text
+            CRITICAL RULE: If user gives specific criteria (like "only fix words starting with X"), IGNORE ALL OTHER ERRORS. Only suggest corrections that meet the exact criteria.
+            
+            CRITICAL RULE: NEVER return a correction where "original" and "corrected" are identical!
+            
+            CRITICAL RULE: ONLY suggest corrections for text that actually appears in the content above. Do not make up or hallucinate errors.
+            
+            INSTRUCTIONS (in priority order):
+            1. FIRST AND FOREMOST: Follow the user's specific instructions exactly (with case-insensitive interpretation)
+            2. ONLY suggest corrections where the original text actually has an error AND needs to be changed
+            3. If no special instructions, focus on spelling mistakes, grammar errors, punctuation errors, typos
+            4. DO NOT suggest stylistic changes unless specifically requested by user
+            5. BE CONSERVATIVE - when in doubt, don't suggest a correction (unless user asks for aggressive proofreading)
+            6. Preserve the user's writing style completely (unless user requests style changes)
+            7. DO NOT change contractions, colloquialisms, or informal language if they match the user's style
+            
+            Examples of CORRECT corrections:
+            - "teh" → "the" (actual typo fix)
+            - "recieve" → "receive" (actual spelling fix)
+            - "Your correct" → "You're correct" (actual grammar fix)
+            
+            Examples of WRONG corrections (DO NOT DO THESE):
+            - "challenges" → "challenges" (identical text - don't suggest!)
+            - "critical" → "critical" (identical text - don't suggest!)
+            - "word" → "word" (no actual error - don't suggest!)
+            - Any correction where original = corrected
+            
+            VALIDATION CHECK: Before adding any correction, verify:
+            1. "original" != "corrected" 
+            2. The correction meets the user's specific criteria (if any)
+            3. The original text actually exists in the content
             
             Return your response as JSON with only this field:
-            - corrections: List of ACTUAL errors found, each with "original" and "corrected" versions
+            - corrections: List of ACTUAL errors found where original ≠ corrected, each with "original" and "corrected" versions
             
             Example format:
             {{"corrections": [{{"original": "teh", "corrected": "the"}}, {{"original": "recieve", "corrected": "receive"}}]}}
             
             If no genuine errors are found, return: {{"corrections": []}}
-            
-            Remember: Only include corrections where the "original" and "corrected" are genuinely different and fix an actual error.
             """
             
             logger.info(f"Sending proofread request for persona: {persona}")
@@ -233,27 +260,25 @@ class WritingTools:
             USER'S PREFERRED WRITING STYLE:
             {style_guidance}
             
-            DRAFT CONTENT AS OF NOW FOR CONTEXT:
+            DRAFT CONTENT FOR CONTEXT:
             {content}
             
             USER QUERY:
             {query}
             
-            Respond naturally and conversationally, matching the user's writing style.
+            CRITICAL: Match the user's energy and length. Short query = short response.
             
-            RESPONSE GUIDELINES:
-            1. Keep responses concise and conversational - match the length and energy of the user's message
-            2. The content is purely for context, if they ask something about the content, you can use it to help them.
-            3. For simple greetings like "hi" or "hello", respond briefly and warmly in their style
-            4. For questions, provide helpful answers but avoid unnecessary elaboration
-            5. Write in the user's persona, tone, and style traits naturally
-            5. Sound like the same person who wrote their sample text
-            6. Don't be overly formal or verbose unless their style specifically calls for it
-            7. Match their conversational energy - short query = short response, detailed query = detailed response
-            8. Never mention that you're adapting to a style - just be natural
-            9. I REPEAT, DO NOT RETURN LONG RESPONSES, KEEP THEM CONCISE AND TO THE POINT
+            RESPONSE RULES:
+            1. For greetings ("hi", "hello"): Respond with 1 brief, warm sentence only
+            2. For simple questions: Give direct answers without elaboration
+            3. Match their conversational tone and writing style naturally
+            4. Use their persona, tone, and style traits
+            5. Never mention you're adapting to their style
+            6. Content is context only - reference if they ask about it
+            7. Be conversational, not formal or essay-like
+            8. KEEP RESPONSES SHORT - no multi-paragraph responses for simple interactions
             
-            Remember: This is a chat conversation, not an essay. Be helpful but conversational.
+            This is casual chat, not content creation. Be brief and natural.
             """
             
             logger.info(f"Sending chat completion request for persona: {persona}")

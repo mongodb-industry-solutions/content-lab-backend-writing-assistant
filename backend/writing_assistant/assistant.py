@@ -33,15 +33,15 @@ class WritingAssistant:
         try:
             if selected_tool == "refine":
                 logger.info("Using refine tool")
-                result = self.writing_tools.refine_content(content, user_profile)
+                result = self.writing_tools.refine_content(content, user_profile, user_input)
                 
             elif selected_tool == "outline":
                 logger.info("Using outline tool")
-                result = self.writing_tools.create_outline(topic_details, user_profile)
+                result = self.writing_tools.create_outline(topic_details, user_profile, user_input)
                 
             elif selected_tool == "proofread":
                 logger.info("Using proofread tool")
-                result = self.writing_tools.proofread_content(content, user_profile)
+                result = self.writing_tools.proofread_content(content, user_profile, user_input)
                 
             elif selected_tool:
                 # Unknown tool
