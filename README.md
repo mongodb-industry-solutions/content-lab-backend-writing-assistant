@@ -10,7 +10,7 @@ This repository hosts the backend microservice for the Writing Assistant, an AI-
 
 This backend is structured as a modular microservice, focused on scalable, maintainable, and extensible AI-driven writing assistance. Each component is designed for independent development and integration with other services or frontends.
 
-### **Core Structure**
+### **Core Structure:**
 
 #### 1. API Layer
 
@@ -61,7 +61,10 @@ This backend is structured as a modular microservice, focused on scalable, maint
 - **(Optional) Other APIs:**
   - The codebase is structured for easy extension to other AI or data services.
 
-### **Summary Table**
+### **Summary Table:**
+
++ A short summary of the components used in our microservice for easier understanding and scalability: 
+
 
 | Layer/Component   | Code Location(s)                                  | Responsibility                                             |
 |-------------------|---------------------------------------------------|------------------------------------------------------------|
@@ -72,6 +75,7 @@ This backend is structured as a modular microservice, focused on scalable, maint
 | Config & Env      | `.env`, `pyproject.toml`, `poetry.lock`           | Environment, secrets, dependencies                         |
 | Data Storage      | MongoDB (Atlas), via `pymongo`                    | Store user data, drafts, suggestions, etc.                 |
 | External Services | AWS Bedrock, Anthropic Claude                     | LLM completions, AI-powered suggestions                    |
+
 
 ## **Key Features**
 
