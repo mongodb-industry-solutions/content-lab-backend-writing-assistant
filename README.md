@@ -4,34 +4,72 @@ This repository hosts the backend microservice for the Writing Assistant, an AI-
 
 ## **High Level Architecture**
 
-[High level architecture diagram here use [google slides](https://docs.google.com/presentation/d/1vo8Y8mBrocJtzvZc_tkVHZTsVW_jGueyUl-BExmVUtI/edit#slide=id.g30c066974c7_0_3536)]
+![High Level Architecture](./architecture/chatbot.svg)
 
 ## **Architecture Overview**
 
 This backend is structured as a modular microservice, focused on scalable, maintainable, and extensible AI-driven writing assistance. Each component is designed for independent development and integration with other services or frontends.
 
-### Core Structure:
+### **Core Structure**
 
-- **API Application:**
+#### 1. API Layer
 
-The main entry point `(backend/main.py)` serves as the API gateway, exposing endpoints for writing assistance, chat completions, and tool-based content operations. The API is designed for high performance and easy integration.
+- **File:** `backend/main.py`
+- **Role:**
+  - Serves as the main entrypoint for the backend service.
+  - Exposes REST API endpoints for writing assistance, chat completions, and tool-based content operations.
+  - Handles request routing and integrates with FastAPI for high-performance, async API handling.
 
-- **LLM Integration:**
+#### 2. LLM Integration Layer
 
-The `(backend/bedrock/..)` directory contains modules for interacting with AWS Bedrock and Anthropic Claude models. These modules handle chat completions, prompt engineering, and communication with external AI services.
+- **Directory:** `backend/bedrock/`
+- **Key Files:**
+  - `anthropic_chat_completions.py`: Handles chat completion requests to Anthropic Claude via AWS Bedrock, including prompt formatting and response parsing.
+  - `client.py`: Manages the setup and secure communication with AWS Bedrock and Anthropic Claude, abstracting away authentication and API details.
 
-- **Writing Assistant Tools:**
+#### 3. Writing Assistant Tools
 
-The `(backend/writing_assistant/..)` directory provides specialized tools and logic for content help, editing, and enhancement. This includes utility functions, prompt templates, and workflow orchestration for writing tasks.
+- **Directory:** `backend/writing_assistant/`
+- **Key Files:**
+  - `assistant.py`: Orchestrates the workflow for writing assistance, including input validation, tool selection, and response aggregation.
+  - `tools.py`: Provides specialized utility functions and tools for content editing, rewriting, grammar checking, and enhancement.
 
-- **Client Abstraction::**
+#### 4. Containerization & Deployment
 
-The `(backend/bedrock/client.py)` module abstracts the details of connecting to external AI services, ensuring secure and efficient communication.
+- **Files:**
+  - `Dockerfile.backend`: Defines the Docker image for the backend service.
+  - `docker-compose.yml`: Orchestrates multi-container deployment (if needed).
+  - `makefile`: Provides build and clean commands for Dockerized workflows.
 
-- **Containerization:**
+#### 5. Configuration & Environment
 
-The service is fully containerized using Docker, enabling consistent deployment across environments.
+- **Files:**
+  - `.env` (to be placed in `/backend`): Stores environment variables for database, AWS, and service configuration.
+  - `pyproject.toml`, `poetry.lock`: Manage Python dependencies and project metadata.
 
+#### 6. Data Storage
+
+- **Database:** MongoDB (Atlas)
+- **Integration:**
+  - Managed via environment variables and `pymongo` in the backend.
+  - **Collections:** `news`, `reddit_posts`, `suggestions`, `drafts`, `userProfiles`.
+
+#### 7. External Services
+
+- **AWS Bedrock:**
+  - Provides access to Anthropic Claude for LLM-powered completions and suggestions.
+- **(Optional) Other APIs:**
+  - The codebase is structured for easy extension to other AI or data services.
+
+| Layer/Component   | Code Location(s)                                  | Responsibility                                             |
+|-------------------|---------------------------------------------------|------------------------------------------------------------|
+| API Layer         | `backend/main.py`                                 | Expose REST endpoints, route requests                      |
+| LLM Integration   | `backend/bedrock/`                                | Communicate with AWS Bedrock & Anthropic Claude            |
+| Writing Tools     | `backend/writing_assistant/`                      | Content editing, enhancement, workflow orchestration       |
+| Containerization  | `Dockerfile.backend`, `docker-compose.yml`, `makefile` | Deployment, build, orchestration                           |
+| Config & Env      | `.env`, `pyproject.toml`, `poetry.lock`           | Environment, secrets, dependencies                         |
+| Data Storage      | MongoDB (Atlas), via `pymongo`                    | Store user data, drafts, suggestions, etc.                 |
+| External Services | AWS Bedrock, Anthropic Claude                     | LLM completions, AI-powered suggestions                    |
 
 ## **Key Features**
 
@@ -139,25 +177,26 @@ Before you begin, ensure you have met the following requirements:
 
 ---
 
+
 ## **Setup Instructions**
 
-### 1. **Clone the Repository**
+### Step 1: Set Up the Repository and MongoDB Database
 
-```bash
-git clone <REPO_URL>
-cd ist-media-internship-be2
-```
-> Replace `<REPO_URL>` with your repository's actual URL.
+1. **Fork the Repository**  
+   - Visit the [GitHub repository page](https://github.com/mongodb-industry-solutions/ist-media-internship-be2) and click the **Fork** button in the top right corner to create your own copy of the repository under your GitHub account.
 
-### 2. **Install Poetry**
+2. **Clone Your Fork**  
+   - Open your terminal and run:
+     ```bash
+     git clone https://github.com/<your-username>/ist-media-internship-be2.git
+     cd ist-media-internship-be
+     ```
 
-If you don’t have Poetry installed, follow the [official installation guide](https://python-poetry.org/docs/#installation):
-
-```bash
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
----
+3. **(Optional) Set Up Upstream Remote**  
+   - To keep your fork up to date with the original repository, add the upstream remote:
+     ```bash
+     git remote add upstream https://github.com/<original-owner>/ist-media-internship-be2.git
+     ```
 
 ### Step 2: Add MongoDB User
 
@@ -169,51 +208,49 @@ Follow [MongoDB's guide](https://www.mongodb.com/docs/atlas/security-add-mongodb
 > Create a `.env` file in the `/backend` directory with the following content:
 >
 > ```bash
-> MONGODB_URI=your_mongod_uri
+>MONGODB_URI=your_mongod_uri
 >DATABASE_NAME=dbname
 >APP_NAME=appname
->NEWS_COLLECTION=news
->REDDIT_COLLECTION=reddit_posts
->SUGGESTION_COLLECTION=suggestions
 >USER_PROFILES_COLLECTION=userProfiles
 >DRAFTS_COLLECTION=drafts
 >AWS_REGION=regionname
 > ```
 
-### 4. **Install Python Dependencies**
+## **Running the Backend**
 
-Navigate to the backend directory and install dependencies using Poetry:
+### Virtual Environment Setup with Poetry
 
-```bash
-cd backend
-poetry install
-```
-
----
-
-### 5. **Run the Backend Service**
-
-Start the backend API server:
-
-```bash
-poetry run python main.py
-```
-> If using FastAPI and Uvicorn, you might use:
-> ```bash
-> poetry run uvicorn main:app --host 0.0.0.0 --port 8000
-> ```
+1. Open a terminal in the project root directory.
+2. Run the following commands:
+   ```bash
+   make poetry_start
+   make poetry_install
+   ```
+3. Verify that the `.venv` folder has been generated within the `/backend` directory.
 
 ---
 
-### 6. **(Optional) Run with Docker**
+### Start the Backend
 
-To build and run the backend in a Docker container:
+To start the backend service, run:
+
+```bash
+poetry run uvicorn main:app --host 0.0.0.0 --port 8001
+```
+
+> Default port is `8001` for this microservice. Modify the `--port` flag if needed.
+
+---
+
+## Running with Docker
+
+Run the following command in the root directory:
 
 ```bash
 make build
 ```
 
-To stop and remove the container and image:
+To remove the container and image:
 
 ```bash
 make clean
@@ -221,31 +258,23 @@ make clean
 
 ---
 
-### 7. **Access the API Documentation**
+## API Documentation
 
-Once the server is running, open your browser and go to:
+You can access the API documentation by visiting the following URL:
+
 
 ```
 http://localhost:<PORT_NUMBER>/docs
 ```
 E.g. `http://localhost:8001/docs`
 
+
 > [!NOTE]
 > Make sure to replace `<PORT_NUMBER>` with the port number you are using and ensure the backend is running.
+
+---
 
 ## Common errors
 
 > [!IMPORTANT]
 > Check that you've created an `.env` file that contains the required environment variables.
-
-
----
-
-**Troubleshooting Tips:**
-- Ensure your `.env` file is present and correctly configured.
-- Verify your AWS credentials and Bedrock access.
-- If you encounter issues with dependencies, try `poetry lock --no-update` and then `poetry install` again.
-
----
-
-You’re now ready to use the Writing Assistant Backend!
