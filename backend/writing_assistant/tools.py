@@ -1,4 +1,8 @@
-# Libs
+# ---tools.py---
+
+# This file contains the WritingTools class, which is used to process writing requests and generate responses using the BedrockAnthropicChatCompletions class.
+
+# Importing necessary libraries
 import logging
 import json
 from dotenv import load_dotenv
@@ -11,12 +15,21 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 class WritingTools:
+    """A class to process writing requests and generate responses using the BedrockAnthropicChatCompletions class."""
 
+    # Setting up logging
+    logger = logging.getLogger(__name__)
+
+    # Defining the WritingTools class
     def __init__(self):
         self.claude_client = BedrockAnthropicChatCompletions()
 
     def _extract_profile_data(self, user_profile: dict) -> Tuple[str, str, list, str]:
-        """Extract all needed profile data with defaults"""
+        """
+        Extract all needed profile data with defaults
+        :param user_profile: A dictionary containing the user's profile data
+        :return: A tuple containing the user's persona, tone, style traits, and sample text
+        """
         return (
             user_profile.get("persona", "Default Writer"),
             user_profile.get("tone", "Neutral"),
@@ -25,7 +38,11 @@ class WritingTools:
         )
 
     def _create_style_guidance(self, user_profile: dict) -> str:
-        """Create consistent style guidance string for all tools"""
+        """
+        Create consistent style guidance string for all tools
+        :param user_profile: A dictionary containing the user's profile data
+        :return: A string containing the user's persona, tone, style traits, and sample text
+        """
         persona, tone, style_traits, sample_text = self._extract_profile_data(user_profile)
         
         return f"""
@@ -39,7 +56,13 @@ class WritingTools:
         """
 
     def refine_content(self, content: str, user_profile: dict, user_input: str) -> dict:
-        """Refine content according to user's preferred writing style."""
+        """
+        Refine content according to user's preferred writing style.
+        :param content: A string containing the content to refine
+        :param user_profile: A dictionary containing the user's profile data
+        :param user_input: A string containing the user's input
+        :return: A dictionary containing the refined content
+        """
         try: 
             persona, tone, style_traits, sample_text = self._extract_profile_data(user_profile)
             style_guidance = self._create_style_guidance(user_profile)
@@ -87,7 +110,13 @@ class WritingTools:
             }
 
     def create_outline(self, topic_details: str, user_profile: dict, user_input: str) -> dict:
-        """Create an outline according to user's preferred writing style using topic details."""
+        """
+        Create an outline according to user's preferred writing style using topic details.
+        :param topic_details: A string containing the topic details
+        :param user_profile: A dictionary containing the user's profile data
+        :param user_input: A string containing the user's input
+        :return: A dictionary containing the outline
+        """
         try: 
             style_guidance = self._create_style_guidance(user_profile)
             
@@ -172,7 +201,13 @@ class WritingTools:
             }
         
     def proofread_content(self, content: str, user_profile: dict, user_input: str) -> dict:
-        """Proofread content while preserving user's preferred writing style."""
+        """
+        Proofread content while preserving user's preferred writing style.
+        :param content: A string containing the content to proofread
+        :param user_profile: A dictionary containing the user's profile data
+        :param user_input: A string containing the user's input
+        :return: A dictionary containing the proofread content
+        """
         try:
             persona, tone, style_traits, sample_text = self._extract_profile_data(user_profile)
             style_guidance = self._create_style_guidance(user_profile)
@@ -249,7 +284,13 @@ class WritingTools:
             return {"corrections": []}
 
     def chat_completion(self, query: str, user_profile: dict, content: str) -> dict:
-        """Provide a chat response according to user's preferred writing style."""
+        """
+        Provide a chat response according to user's preferred writing style.
+        :param query: A string containing the user's query
+        :param user_profile: A dictionary containing the user's profile data
+        :param content: A string containing the content to chat about
+        :return: A dictionary containing the chat response
+        """
         try:
             persona, tone, style_traits, sample_text = self._extract_profile_data(user_profile)
             style_guidance = self._create_style_guidance(user_profile)
@@ -295,7 +336,11 @@ class WritingTools:
             }
             
     def _format_style_traits(self, style_traits):
-        """Format style traits for prompt inclusion"""
+        """
+        Format style traits for prompt inclusion
+        :param style_traits: A list containing the user's style traits
+        :return: A string containing the formatted style traits
+        """
         if not style_traits:
             return "No specific style traits provided."
         

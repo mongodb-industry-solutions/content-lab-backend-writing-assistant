@@ -1,9 +1,16 @@
+# ---assistant.py---
+
+# This file contains the WritingAssistant class, which is used to process writing requests and generate responses using the WritingTools class.
+
+# Importing necessary libraries
 from .tools import WritingTools
 from typing import Optional, Dict, Any
 import logging
 
+# Setting up logging
 logger = logging.getLogger(__name__)
 
+# Defining the WritingAssistant class
 class WritingAssistant:
     # Available tools for validation
     AVAILABLE_TOOLS = ["refine", "outline", "proofread", "chat"]

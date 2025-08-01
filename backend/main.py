@@ -1,3 +1,8 @@
+# ---main.py---
+
+# This file contains the main application for the Writing Assistant API.
+
+# Importing necessary libraries
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,11 +15,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Setting up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+# Defining the FastAPI app
 app = FastAPI(title="Writing Assistant API", version="1.0.0")
 
+# Adding CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,8 +31,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Creating an instance of the WritingAssistant class
 writing_assistant = WritingAssistant()
 
+# Defining the WritingRequest model
 class WritingRequest(BaseModel):
     profile: Dict[str, Any]
     draftContent: str 
@@ -32,16 +42,20 @@ class WritingRequest(BaseModel):
     message: str
     topicDetails: Dict[str, Any]
 
+# Defining the read_root endpoint
 @app.get("/")
 async def read_root():
     """Test check endpoint"""
     return {"status": "Test_Check", "message": "Writing Assistant API is running"}
 
-
+# Defining the assist_writing endpoint
 @app.post("/api/writing/assist")
 async def assist_writing(request: WritingRequest):
-
-    """Main Endpoint to process writing requests"""
+    """
+    Main Endpoint to process writing requests
+    :param request: A WritingRequest object containing the user's profile, draft content, prompt type, message, and topic details
+    :return: A dictionary containing the status, message, and data
+    """
     try: 
         tool_mapping = {
             "refine": "refine",
@@ -94,7 +108,7 @@ async def assist_writing(request: WritingRequest):
             "message": str(e),
         }
     
-
+# Defining the main function
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8000))

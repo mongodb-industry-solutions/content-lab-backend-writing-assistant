@@ -1,3 +1,8 @@
+# ---anthropic_chat_completions.py---
+
+# This file contains the BedrockAnthropicChatCompletions class, which is used to generate chat completions using Bedrock's Anthropic text models.
+
+# Importing necessary libraries
 import json
 from bedrock.client import BedrockClient
 from botocore.exceptions import ClientError
@@ -7,8 +12,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Setting up logging
 logger = logging.getLogger(__name__)
 
+# Defining the BedrockAnthropicChatCompletions class
 class BedrockAnthropicChatCompletions(BedrockClient):
     """ A class to generate chat completions using Bedrock's Anthropic text models"""
     # Reference: https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-runtime_example_bedrock-runtime_InvokeModel_AnthropicClaude_section.html
