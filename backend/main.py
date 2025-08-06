@@ -40,7 +40,7 @@ class WritingRequest(BaseModel):
     draftContent: str 
     promptType: Optional[str]  = None
     message: str
-    topicDetails: Dict[str, Any]
+    topicDetails: Optional[Dict[str, Any]] = None
 
 # Defining the read_root endpoint
 @app.get("/")
