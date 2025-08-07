@@ -141,8 +141,6 @@ class WritingTools:
             <h2>4. Conclusion & Call-to-Action</h2>
             <p><em>Wrap up with: Key takeaways summary, next steps for readers</em></p>
             
-            <hr>
-            <p><strong>Writing Tips:</strong> Adapt tone to match your style, use transition sentences between sections, include relevant data/examples throughout.</p>
             """
 
             prompt = f"""
