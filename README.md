@@ -53,9 +53,9 @@ This backend is structured as a modular microservice, focused on scalable, maint
 - **Integration:**
   - Managed via environment variables and `pymongo` in the backend.
   - **Collections:** `userProfiles`.
-  - For this project, we use only `userProfiles` to provide a personalised writing assistance. 
+  - In this microservice, we use only `userProfiles` to provide a personalised writing assistance. 
 
-- Example documents for all collections of this demo are stored in JSON format under [`backend/collections/`](https://github.com/mongodb-industry-solutions/ist-media-internship-be2/tree/main/backend/collections). You can take a look at our [main microservice](https://github.com/mongodb-industry-solutions/ist-media-internship-be) for backend services and how other collections are employed in our demo. 
+- Example documents for all collections of this demo are stored in JSON format under [`backend/collections/`](https://github.com/mongodb-industry-solutions/ist-media-internship-be2/tree/main/backend/collections). You can also explore our [main microservice](https://github.com/mongodb-industry-solutions/ist-media-internship-be) to learn more about the other backend services and how the collections are used throughout the demo.
 
 #### 7. External Services
 
