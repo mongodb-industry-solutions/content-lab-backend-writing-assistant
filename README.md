@@ -52,7 +52,10 @@ This backend is structured as a modular microservice, focused on scalable, maint
 - **Database:** MongoDB (Atlas)
 - **Integration:**
   - Managed via environment variables and `pymongo` in the backend.
-  - **Collections:** `news`, `reddit_posts`, `suggestions`, `drafts`, `userProfiles`.
+  - **Collections:** `userProfiles`.
+  - For this project, we use only `userProfiles` to provide a personalised writing assistance. 
+
+- Example documents for all collections of this demo are stored in JSON format under [`backend/collections/`](https://github.com/mongodb-industry-solutions/ist-media-internship-be2/tree/main/backend/collections). You can take a look at our [main microservice](https://github.com/mongodb-industry-solutions/ist-media-internship-be) for backend services and how other collections are employed in our demo. 
 
 #### 7. External Services
 
