@@ -20,15 +20,21 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # Defining the FastAPI app
-app = FastAPI(title="Writing Assistant API", version="1.0.0")
+app = FastAPI(
+    title="Writing Assistant API", 
+    version="0.0.1",
+    redirect_slashes=False
+)
 
-# Adding CORS middleware
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, PUT, DELETE, OPTIONS, etc.)
+    allow_headers=["*"],  # Allow all headers
+    expose_headers=["*"],  # Expose all headers to the client
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 # Creating an instance of the WritingAssistant class
@@ -41,12 +47,26 @@ class WritingRequest(BaseModel):
     promptType: Optional[str]  = None
     message: str
     topicDetails: Optional[Dict[str, Any]] = None
-
-# Defining the read_root endpoint
+    
+    
+# Health check endpoint
 @app.get("/")
 async def read_root():
-    """Test check endpoint"""
-    return {"status": "Test_Check", "message": "Writing Assistant API is running"}
+    return {
+        "message": "Contentlab Chat API is running",
+        "version": "0.0.1",
+        "status": "healthy",
+        "service": "contentlab-chat"
+    }
+
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "service": "contentlab-chat"
+    }
 
 # Defining the assist_writing endpoint
 @app.post("/api/writing/assist")
@@ -107,11 +127,3 @@ async def assist_writing(request: WritingRequest):
             "status" : "error",
             "message": str(e),
         }
-    
-# Defining the main function
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.getenv("PORT", 8001))
-    host = os.getenv("HOST", "0.0.0.0")
-    uvicorn.run(app, host=host, port=port)
-
