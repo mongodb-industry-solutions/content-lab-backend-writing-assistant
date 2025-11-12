@@ -287,3 +287,9 @@ E.g. `http://localhost:8001/docs`
 
 > [!IMPORTANT]
 > Check that you've created an `.env` file that contains the required environment variables.
+
+---
+
+## 📄 License
+
+See [LICENSE](LICENSE) file for details.
