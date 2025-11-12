@@ -1,0 +1,16 @@
+env:
+  NODE_ENV: prod
+  
+envSecrets:
+  MONGODB_URI: contentlab-chat
+  DATABASE_NAME: contentlab-chat
+  APP_NAME: contentlab-chat
+  AWS_REGION: contentlab-chat
+  USER_PROFILES_COLLECTION: contentlab-chat
+  NODE_ENV: contentlab-chat
+
+serviceAccount:
+  enabled: true
+  irsa:
+    accountId: "275662791714"
+    roleName: "kanopy-prod-cicd-irsa"
