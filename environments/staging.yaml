@@ -8,6 +8,7 @@ envSecrets:
   AWS_REGION: contentlab-chat
   USER_PROFILES_COLLECTION: contentlab-chat
   NODE_ENV: contentlab-chat
+  BEDROCK_MODEL_HAIKU: contentlab-chat
 
 serviceAccount:
   enabled: true
