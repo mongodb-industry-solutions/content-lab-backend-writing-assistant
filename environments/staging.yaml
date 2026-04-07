@@ -1,6 +1,6 @@
 env:
   NODE_ENV: staging
-  
+
 envSecrets:
   MONGODB_URI: contentlab-chat
   DATABASE_NAME: contentlab-chat
@@ -15,3 +15,10 @@ serviceAccount:
   irsa:
     accountId: "275662791714"
     roleName: "kanopy-staging-cicd-irsa"
+
+security:
+  dataClassification: "Internal"
+  dataDesignation: ["MI"]
+
+ownership:
+  driEmail: "benjamin.lorenze@mongodb.com"
