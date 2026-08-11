@@ -1,6 +1,6 @@
 # **Content Lab - Writing Assistant**
 
-This repository hosts the backend microservice for the Writing Assistant, an AI-powered tool designed to help users draft, refine, and improve their written content. The service uses large language models (such as Anthropic Claude via AWS Bedrock) to provide real-time writing suggestions, content completions, and productivity tools for writers, editors, and content creators.
+This repository hosts the backend microservice for the Writing Assistant, an AI-powered tool designed to help users draft, refine, and improve their written content. The service uses large language models (such as Anthropic Claude via MongoDB's Grove gateway) to provide real-time writing suggestions, content completions, and productivity tools for writers, editors, and content creators.
 
 ## **High Level Architecture**
 
@@ -22,10 +22,9 @@ This backend is structured as a modular microservice, focused on scalable, maint
 
 #### 2. LLM Integration Layer
 
-- **Directory:** `backend/bedrock/`
+- **Directory:** `backend/grove/`
 - **Key Files:**
-  - `anthropic_chat_completions.py`: Handles chat completion requests to Anthropic Claude via AWS Bedrock, including prompt formatting and response parsing.
-  - `client.py`: Manages the setup and secure communication with AWS Bedrock and Anthropic Claude, abstracting away authentication and API details.
+  - `chat_completions.py`: Handles chat completion requests to Anthropic Claude via MongoDB's Grove gateway, including prompt formatting, response parsing, and retry handling.
 
 #### 3. Writing Assistant Tools
 
@@ -44,7 +43,7 @@ This backend is structured as a modular microservice, focused on scalable, maint
 #### 5. Configuration & Environment
 
 - **Files:**
-  - `.env` (to be placed in `/backend`): Stores environment variables for database, AWS, and service configuration.
+  - `.env` (to be placed in `/backend`): Stores environment variables for database, Grove, and service configuration. See `backend/.env.example` for the full list.
   - `pyproject.toml`, `poetry.lock`: Manage Python dependencies and project metadata.
 
 #### 6. Data Storage
@@ -59,7 +58,7 @@ This backend is structured as a modular microservice, focused on scalable, maint
 
 #### 7. External Services
 
-- **AWS Bedrock:**
+- **MongoDB Grove:**
   - Provides access to Anthropic Claude for LLM-powered completions and suggestions.
 - **(Optional) Other APIs:**
   - The codebase is structured for easy extension to other AI or data services.
@@ -72,12 +71,12 @@ This backend is structured as a modular microservice, focused on scalable, maint
 | Layer/Component   | Code Location(s)                                  | Responsibility                                             |
 |-------------------|---------------------------------------------------|------------------------------------------------------------|
 | API Layer         | `backend/main.py`                                 | Expose REST endpoints, route requests                      |
-| LLM Integration   | `backend/bedrock/`                                | Communicate with AWS Bedrock & Anthropic Claude            |
+| LLM Integration   | `backend/grove/`                                  | Communicate with MongoDB Grove & Anthropic Claude           |
 | Writing Tools     | `backend/writing_assistant/`                      | Content editing, enhancement, workflow orchestration       |
 | Containerization  | `Dockerfile.backend`, `docker-compose.yml`, `makefile` | Deployment, build, orchestration                           |
 | Config & Env      | `.env`, `pyproject.toml`, `poetry.lock`           | Environment, secrets, dependencies                         |
 | Data Storage      | MongoDB (Atlas), via `pymongo`                    | Store user data, drafts, suggestions, etc.                 |
-| External Services | AWS Bedrock, Anthropic Claude                     | LLM completions, AI-powered suggestions                    |
+| External Services | MongoDB Grove, Anthropic Claude                   | LLM completions, AI-powered suggestions                    |
 
 
 ## **Key Features**
@@ -86,7 +85,7 @@ This backend is structured as a modular microservice, focused on scalable, maint
 
 - Modular toolset for content editing, rewriting, and enhancement
 
-- Integration with Anthropic Claude and AWS Bedrock for advanced language capabilities
+- Integration with Anthropic Claude via MongoDB's Grove gateway for advanced language capabilities
 
 - API endpoints for seamless frontend integration
 
@@ -107,7 +106,7 @@ The backend receives the request and routes it to the appropriate writing assist
 
 3. **AI Processing:**
 
-The service interacts with Anthropic Claude (via AWS Bedrock) to generate completions, suggestions, or edits based on the user’s input.
+The service interacts with Anthropic Claude (via MongoDB's Grove gateway) to generate completions, suggestions, or edits based on the user’s input.
 
 4. **Tool-Based Enhancement:**
 
@@ -131,10 +130,9 @@ The Writing Assistant backend combines user input, advanced AI models, and speci
 ### Database & Data Storage
 - [**pymongo**](https://pymongo.readthedocs.io/) for MongoDB connectivity and operations.
 
-### AWS & Cloud Services
-- [**boto3**](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) for AWS SDK integration and Bedrock API access.
-- [**botocore**](https://botocore.amazonaws.com/v1/documentation/api/latest/index.html) for low-level AWS service operations.
-- [**Anthropic Claude**](https://aws.amazon.com/bedrock/anthropic/?ams%23interactive-card-vertical%23pattern-data--1838624787.filter=%257B%2522filters%2522%253A%255B%255D%257D) via AWS Bedrock for text generation and content analysis.
+### LLM Gateway
+- [**httpx**](https://www.python-httpx.org/) for making HTTP requests to MongoDB's Grove gateway.
+- [**Anthropic Claude**](https://www.anthropic.com/claude) via MongoDB's Grove gateway for text generation and content analysis.
 
 ### Containerization & Deployment
 
@@ -147,18 +145,15 @@ The Writing Assistant backend combines user input, advanced AI models, and speci
 
 ## **Relevant Models**
 
-- [**Claude 3 Haiku**](https://docs.aws.amazon.com/bedrock/latest/userguidebedrock-runtime_example_bedrock-runtime_InvokeModel_AnthropicClaude_section.html) for writing assisant. 
+- [**Claude Haiku**](https://www.anthropic.com/claude) (default `claude-haiku-4-5`, configurable via `GROVE_CHAT_MODEL`) for writing assistant. 
 
 
 ## **Key Components**
 
-#### a. Bedrock Integration (`backend/bedrock/`)
+#### a. Grove Integration (`backend/grove/`)
 
-- **anthropic_chat_completions.py:**  
-  Handles chat completion requests to Anthropic Claude via AWS Bedrock.
-
-- **client.py:**  
-  Manages API client setup and secure communication with external AI services.
+- **chat_completions.py:**  
+  Handles chat completion requests to Anthropic Claude via MongoDB's Grove gateway, including retry handling for transient failures.
 
 #### b. Writing Assistant Tools (`backend/writing_assistant/`)
 
@@ -180,8 +175,7 @@ Before you begin, ensure you have met the following requirements:
 - **MongoDB Atlas** account - [Register Here](https://account.mongodb.com/account/register)
 - **Python 3.10 or higher**
 - **Poetry** – [Install Here](https://python-poetry.org/docs/#installation)
-- **AWS CLI** configured with appropriate credentials – [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-- **AWS Account** with Bedrock access enabled – [Sign up Here](https://aws.amazon.com/bedrock/)
+- **Grove API key** – request access to MongoDB's Grove gateway and obtain a `GROVE_API_KEY`
 - **Docker** (optional, for containerized deployment) – [Install Here](https://docs.docker.com/get-docker/)
 
 ---
@@ -222,8 +216,12 @@ Follow [MongoDB's guide](https://www.mongodb.com/docs/atlas/security-add-mongodb
 >APP_NAME=appname
 >USER_PROFILES_COLLECTION=userProfiles
 >DRAFTS_COLLECTION=drafts
->AWS_REGION=regionname
+>GROVE_API_KEY=your_grove_api_key
+>GROVE_BASE_URL=https://grove-gateway-prod.azure-api.net/grove-foundry-prod/anthropic
+>GROVE_CHAT_MODEL=claude-haiku-4-5
 > ```
+>
+> See `backend/.env.example` for a copyable template.
 
 ## **Running the Backend**
 
