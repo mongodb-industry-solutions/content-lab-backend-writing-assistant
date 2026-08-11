@@ -85,6 +85,13 @@ class GroveAnthropicChatCompletions:
             RuntimeError: If Grove cannot be reached, returns an error status, or returns a
                 response body that doesn't match the expected Anthropic Messages API shape.
         """
+        # Fail loudly and early: without a key httpx would reject the None header value with a
+        # TypeError, which says nothing about the actual problem.
+        if not self.api_key:
+            raise RuntimeError(
+                "GROVE_API_KEY is not set - the writing assistant has no model to call."
+            )
+
         url = f"{self.base_url}/v1/messages"
 
         # Grove sits behind Azure APIM, which authenticates with `api-key`, NOT Anthropic's
