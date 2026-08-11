@@ -1,13 +1,13 @@
 # ---tools.py---
 
-# This file contains the WritingTools class, which is used to process writing requests and generate responses using the BedrockAnthropicChatCompletions class.
+# This file contains the WritingTools class, which is used to process writing requests and generate responses using the GroveAnthropicChatCompletions class.
 
 # Importing necessary libraries
 import logging
 import json
 from dotenv import load_dotenv
 from typing import Optional, Dict, Any, Tuple
-from bedrock.anthropic_chat_completions import BedrockAnthropicChatCompletions
+from grove.chat_completions import GroveAnthropicChatCompletions
 
 # Load environment variables
 load_dotenv()
@@ -15,14 +15,14 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 class WritingTools:
-    """A class to process writing requests and generate responses using the BedrockAnthropicChatCompletions class."""
+    """A class to process writing requests and generate responses using the GroveAnthropicChatCompletions class."""
 
     # Setting up logging
     logger = logging.getLogger(__name__)
 
     # Defining the WritingTools class
     def __init__(self):
-        self.claude_client = BedrockAnthropicChatCompletions()
+        self.claude_client = GroveAnthropicChatCompletions()
 
     def _extract_profile_data(self, user_profile: dict) -> Tuple[str, str, list, str]:
         """
