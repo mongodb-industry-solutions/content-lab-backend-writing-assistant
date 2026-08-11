@@ -1,17 +1,19 @@
 env:
   NODE_ENV: staging
-  
+  GROVE_BASE_URL: https://grove-gateway-prod.azure-api.net/grove-foundry-prod/anthropic
+  GROVE_CHAT_MODEL: claude-haiku-4-5
+
 envSecrets:
   MONGODB_URI: contentlab-chat
   DATABASE_NAME: contentlab-chat
   APP_NAME: contentlab-chat
-  AWS_REGION: contentlab-chat
   USER_PROFILES_COLLECTION: contentlab-chat
   NODE_ENV: contentlab-chat
-  BEDROCK_MODEL_HAIKU: contentlab-chat
+  GROVE_API_KEY: contentlab-chat
 
-serviceAccount:
-  enabled: true
-  irsa:
-    accountId: "275662791714"
-    roleName: "kanopy-staging-cicd-irsa"
+security:
+  dataClassification: "Internal"
+  dataDesignation: ["MI"]
+
+ownership:
+  driEmail: "benjamin.lorenze@mongodb.com"
